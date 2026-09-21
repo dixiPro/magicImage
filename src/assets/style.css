@@ -1,0 +1,111 @@
+/*
+ * Buttons and tabs of the component. The look is taken from Bootstrap 5, but
+ * with our own classes: the component is standalone and requires nothing from
+ * the outside. The mi- prefix keeps it away from the host page classes.
+ */
+
+.mi-btn {
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mi-btn:hover {
+  background-color: #f8f9fa;
+}
+
+.mi-btn:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.mi-btn:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.mi-btn--primary {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.mi-btn--primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+/* tabs: Light, Levels, Sharpen */
+.mi-nav {
+  display: flex;
+  gap: 0.125rem;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.mi-nav__link {
+  margin-bottom: -1px;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #0d6efd;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 0.375rem 0.375rem 0 0;
+  cursor: pointer;
+}
+
+.mi-nav__link:hover {
+  border-color: #e9ecef #e9ecef #dee2e6;
+}
+
+.mi-nav__link.is-active {
+  color: #495057;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+
+/* number fields */
+.mi-input {
+  display: inline-block;
+  width: 5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+}
+
+.mi-input:focus {
+  outline: 0;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* checkbox with a label */
+.mi-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.mi-check input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: #0d6efd;
+  cursor: pointer;
+}

@@ -1,0 +1,35 @@
+/**
+ * Every word the component says. It travels by copying, and dragging an i18n
+ * setup into each project along with it makes no sense.
+ */
+export const TEXT = {
+  pick: 'Upload',
+  pasteHere: 'Click here and press Ctrl-V',
+  pasteEmpty: 'There is no picture in the clipboard',
+  light: 'Light',
+  levels: 'Levels',
+  sharpen: 'Sharpen',
+  brightness: 'Brightness',
+  contrast: 'Contrast',
+  saturate: 'Saturation',
+  black: 'Black point',
+  gamma: 'Gamma',
+  white: 'White point',
+  amount: 'Amount',
+  radius: 'Radius, px',
+  threshold: 'Threshold',
+  reset: 'Reset',
+  toCrop: 'Crop',
+  back: 'Back to tuning',
+  next: 'Continue',
+  cancel: 'Cancel',
+  size: 'Size',
+  crop: 'Crop',
+  required: 'Required',
+  shrunk: 'Shrunk for processing',
+  resize: 'Resize down',
+  loadFailed: 'This file could not be read as a picture',
+  encodeFailed: 'The browser could not encode the picture',
+  badParams: 'Invalid parameters: the component cannot work with them',
+  tooSmall: 'This picture cannot give the required size',
+};

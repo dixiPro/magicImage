@@ -1,0 +1,39 @@
+{
+  "name": "magicimage",
+  "version": "0.1.0",
+  "description": "A Vue 3 picture editor in one component: file or clipboard in, original and crop out.",
+  "type": "module",
+  "keywords": [
+    "vue",
+    "vue3",
+    "image",
+    "crop",
+    "cropper",
+    "clipboard",
+    "editor"
+  ],
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "exports": {
+    ".": "./src/MagicImage.vue",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0",
+    "vue-advanced-cropper": "^2.8.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "^7.0.4",
+    "vitest": "^4.1.11",
+    "vue": "^3.5.21",
+    "vue-advanced-cropper": "^2.8.9"
+  }
+}
