@@ -55,7 +55,14 @@ work on the smaller copy. The original is never touched — it leaves as it came
 ## Install
 
 ```bash
-npm i magicimage
+npm i magic-image
+```
+
+**Not published yet.** The command above is what it will be; until the first
+release, copy the `src/` folder into your project and import by a relative path:
+
+```js
+import MagicImage from './magic-image/src/MagicImage.vue';
 ```
 
 `vue` and `vue-advanced-cropper` are peer dependencies: the component uses the
@@ -71,7 +78,7 @@ instead of the package name.
 ```vue
 <script setup>
 import { ref } from 'vue';
-import MagicImage from 'magicimage';
+import MagicImage from 'magic-image';
 
 const busy = ref(false);
 
@@ -290,6 +297,12 @@ npm run dev     # the demo page
 npm run build   # a build in public/magic-image/, for checking only
 npm test        # the crop-mode table, in node, without a browser
 ```
+
+`vite.config.js` is here for the local demo only — the component itself needs
+no build. Every path in that file points into MagicPro, the project this
+component grew in: the dependencies are taken from its `node_modules` and the
+build lands in its `public` folder. Elsewhere those paths mean nothing, so set
+them to your own folders.
 
 Inside MagicPro the component is imported by a relative path
 (`admin/js/magic-image/src/MagicImage.vue`), and the built demo is what the site

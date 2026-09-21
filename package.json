@@ -1,7 +1,13 @@
 {
-  "name": "magicimage",
+  "name": "magic-image",
   "version": "0.1.0",
   "description": "A Vue 3 picture editor in one component: file or clipboard in, original and crop out.",
+  "license": "MIT",
+  "repository": "github:dixiPro/magicImage",
+  "homepage": "https://github.com/dixiPro/magicImage",
+  "bugs": {
+    "url": "https://github.com/dixiPro/magicImage/issues"
+  },
   "type": "module",
   "keywords": [
     "vue",
@@ -14,7 +20,8 @@
   ],
   "files": [
     "src",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": "./src/MagicImage.vue",

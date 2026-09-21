@@ -3,11 +3,15 @@ import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 
 /**
- * Own build of the playground: MagicPro builds the admin panel, this one
- * builds the page where the component is poked by hand.
+ * This config builds the local demo page only. The component itself needs no
+ * build: it ships as source and is compiled by the bundler of the project that
+ * installs it.
  *
- * vue comes from the node_modules of the package: two copies of Vue in one
- * page break reactivity, and the alias keeps it single.
+ * Every path here points into MagicPro, the project this component grew in:
+ * `vue` and `vue-advanced-cropper` are taken from its node_modules (two copies
+ * of Vue in one page break reactivity), and the build lands in its public
+ * folder. Somewhere else these paths mean nothing — set them to your own
+ * folders, or drop this file and look at the demo in the repository.
  */
 export default defineConfig({
   plugins: [vue()],

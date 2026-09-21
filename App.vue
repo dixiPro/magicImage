@@ -111,7 +111,7 @@ const snippet = computed(() => {
 
   return [
     '<script setup>',
-    "import MagicImage from 'magicimage';",
+    "import MagicImage from 'magic-image';",
     '',
     'function onSave({ original, crop }) {',
     '  // two ready File objects — upload them, show them, do what you like',
@@ -181,7 +181,7 @@ function download(part) {
     <template v-if="idle">
       <h2 class="demo__title">Install</h2>
 
-      <pre class="demo__code"><code>npm i magicimage</code></pre>
+      <pre class="demo__code"><code>npm i magic-image</code></pre>
 
       <h2 class="demo__title">Use</h2>
 
