@@ -1,5 +1,5 @@
 {
-  "name": "magic-image",
+  "name": "@dixipro/magic-image",
   "version": "0.1.0",
   "description": "A Vue 3 picture editor in one component: file or clipboard in, original and crop out.",
   "license": "MIT",
@@ -42,5 +42,8 @@
     "vitest": "^4.1.11",
     "vue": "^3.5.21",
     "vue-advanced-cropper": "^2.8.9"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

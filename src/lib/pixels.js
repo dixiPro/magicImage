@@ -3,11 +3,15 @@
  * arguments, nothing here reads the state of a component.
  */
 
-/** Neutral settings: what «Reset» goes back to and what counts as untouched. */
+/**
+ * Neutral settings: what «Reset» goes back to and what counts as untouched.
+ * `on` is the «Apply» checkbox of the tab: switched off, the settings stay on
+ * the sliders but reach neither the preview nor the file.
+ */
 export const NEUTRAL = {
-  light: { brightness: 1, contrast: 1, saturate: 1 },
-  levels: { black: 0, gamma: 1, white: 255 },
-  sharpen: { amount: 0, radius: 1, threshold: 3 },
+  light: { on: false, brightness: 1, contrast: 1, saturate: 1 },
+  levels: { on: false, black: 0, gamma: 1, white: 255 },
+  sharpen: { on: false, amount: 0, radius: 1, threshold: 3 },
 };
 
 /** Fresh set of settings for a new picture. */
@@ -19,14 +23,18 @@ export function neutralAdjust() {
   };
 }
 
+/** The part is switched on and actually changes something. */
 export function isTouched(part, values) {
+  if (!values.on) return false;
   if (part === 'sharpen') return values.amount > 0;
 
-  return Object.keys(NEUTRAL[part]).some((key) => values[key] !== NEUTRAL[part][key]);
+  return Object.keys(NEUTRAL[part]).some((key) => key !== 'on' && values[key] !== NEUTRAL[part][key]);
 }
 
 /** The css filter of the light settings: the browser applies it to the canvas. */
 export function lightCss(light) {
+  if (!light.on) return 'none';
+
   return `brightness(${light.brightness}) contrast(${light.contrast}) saturate(${light.saturate})`;
 }
 
@@ -153,7 +161,7 @@ export function renderTo(canvas, source, width, height, adjust) {
 
   if (isTouched('levels', adjust.levels)) applyLevels(ctx, width, height, adjust.levels);
 
-  applySharpen(ctx, width, height, adjust.sharpen);
+  if (isTouched('sharpen', adjust.sharpen)) applySharpen(ctx, width, height, adjust.sharpen);
 
   return canvas;
 }

@@ -1,89 +1,122 @@
-# MagicImage
+# ✨ MagicImage
 
-There are plenty of fine packages for cropping and processing images. Around
-almost every one of them, though, the same code gets written again and again:
-taking a file from disk, pasting from the clipboard, the control buttons,
-showing and hiding the right things at the right moment, catching the result and
-doing something with it.
+> **Vue 3 image input, crop and adjustment component with clipboard support.**
 
-MagicImage puts all of that into a single Vue 3 component — a sort of Swiss army
-knife for working with pictures.
+[![Live demo](https://img.shields.io/badge/demo-live-ff5a5f)](https://magicimage.dixipro.net/demo)
+![Vue 3](https://img.shields.io/badge/Vue-3-42b883?logo=vuedotjs&logoColor=white)
+![Client side](https://img.shields.io/badge/client--side-only-4c8bf5)
+![No backend](https://img.shields.io/badge/backend-not%20required-6c757d)
+![PNG](https://img.shields.io/badge/output-PNG-6f42c1)
+![JPEG](https://img.shields.io/badge/output-JPEG-f0ad4e)
+![WebP](https://img.shields.io/badge/output-WebP-198754)
+[![Donate](https://img.shields.io/badge/donate-%E2%9D%A4-e25555)](https://magicimage.dixipro.net/donate)
 
-The component takes a picture from a file or from the clipboard, lets it be
-cropped and adjusted, and gives back two files:
+[![MagicImage: upload or paste, crop and adjust, export the result](media/interface.webp)](https://magicimage.dixipro.net/demo)
 
-- the original picture;
-- the processed picture in the chosen format.
+**Upload · Clipboard · Crop · Levels · Brightness · Contrast · Saturation · Sharpen · Resize · PNG / JPEG / WebP**
 
-The point of MagicImage is not to replace the specialised image libraries, but
-to gather the whole everyday scenario of working with a picture into one ready
-component.
+### 👉 [Try the live demo](https://magicimage.dixipro.net/demo)
 
-It knows nothing about servers: the result leaves with a `save` event, and what
-to do with it is up to the owner.
+Pick a case, load a picture, tune it, crop it and download the two files — nothing leaves the browser.
 
-- no network, no uploads, no file names asked;
-- no picture given back without a crop;
-- one dependency of its own: [vue-advanced-cropper](https://github.com/Norserium/vue-advanced-cropper).
+## Why MagicImage?
 
-## Contents
+There are plenty of excellent libraries for cropping and processing images. But almost every time, the same surrounding code has to be written again: file uploads, clipboard paste, controls, UI state management, getting the result, and passing it on to the application.
 
-- [How it works](#how-it-works)
-- [Install](#install)
-- [Usage](#usage)
-- [Props](#props)
-- [Crop modes](#crop-modes)
-- [Events](#events)
-- [Slot](#slot)
-- [Errors](#errors)
-- [File names](#file-names)
-- [The clipboard](#the-clipboard)
-- [Inside](#inside)
-- [Development](#development)
+**MagicImage** brings all of that together in a single Vue 3 component — a kind of **Swiss Army knife for working with images**.
 
-## How it works
+It accepts an image from a file or the clipboard, lets the user crop and adjust it, and returns **two files**:
 
-1. **Upload** — a file from disk, or the paste field and Ctrl-V.
-2. **Tune** — brightness, contrast, saturation; levels with a histogram;
-   sharpness. Each tab has its own «Reset».
-3. **Crop** — the stencil. It is mandatory.
-4. **Continue** — the `save` event, after which the component clears itself.
+- 📄 the original image;
+- 🖼️ the processed image in the selected format.
 
-A picture bigger than `maxPixels` is shrunk at load: the edits and the stencil
-work on the smaller copy. The original is never touched — it leaves as it came.
+The component knows nothing about servers. The result leaves through a `save` event, and what happens after that is entirely up to the application.
 
-## Install
+> **MagicImage is not intended to replace specialised image-processing libraries.**
+>
+> Its purpose is to package the entire common browser-side image workflow into one ready-to-use component.
+
+---
+
+## ✨ Features
+
+- 📂 File upload
+- 📋 Paste image from clipboard
+- ✂️ Mandatory crop
+- 📐 Free, fixed and minimum crop modes
+- ☀️ Brightness
+- ◐ Contrast
+- 🎨 Saturation
+- 📊 Levels with histogram
+- ✨ Sharpening
+- 📏 Resize down
+- 🖼️ PNG, JPEG and WebP output
+- 🧾 Original file preserved
+- 🚫 No network requests
+- 🚫 No uploads
+- 🚫 No backend dependency
+- 🧩 One own dependency: [`vue-advanced-cropper`](https://github.com/Norserium/vue-advanced-cropper)
+
+---
+
+## 🧭 Contents
+
+- [Live demo ↗](https://magicimage.dixipro.net/demo)
+- [Install](#-install)
+- [Quick start](#-quick-start)
+- [How it works](#-how-it-works)
+- [Requirements](#-requirements)
+- [Props](#-props)
+- [Tuning](#-tuning)
+- [Crop modes](#-crop-modes)
+- [Resize down](#-resize-down)
+- [Continue and status](#-continue-and-status)
+- [Events](#-events)
+- [Slots](#-slots)
+- [Text and translation](#-text-and-translation)
+- [Errors](#-errors)
+- [File names](#-file-names)
+- [Clipboard](#-clipboard)
+- [Architecture](#-architecture)
+- [Development](#-development)
+- [Donate](#-donate)
+
+---
+
+## 📦 Install
 
 ```bash
-npm i magic-image
+npm i @dixipro/magic-image
 ```
 
-**Not published yet.** The command above is what it will be; until the first
-release, copy the `src/` folder into your project and import by a relative path:
+> ⚠️ **Not published yet.**
+>
+> Until the first release, copy the `src/` folder into your project and import the component by a relative path.
 
 ```js
 import MagicImage from './magic-image/src/MagicImage.vue';
 ```
 
-`vue` and `vue-advanced-cropper` are peer dependencies: the component uses the
-copies your project already has. The package ships the source, so your bundler
-compiles the `.vue` file — Vite or Webpack with the Vue plugin, which any Vue
-project has anyway. The styles come with the component, nothing extra to import.
+`vue` and `vue-advanced-cropper` are peer dependencies. MagicImage uses the copies already installed in the host project.
 
-Copying the folder into a project works too; then the import is a relative path
-instead of the package name.
+The package ships the Vue source, so the host bundler compiles the `.vue` file.
 
-## Usage
+No separate stylesheet import is required.
+
+---
+
+## 🚀 Quick start
 
 ```vue
 <script setup>
 import { ref } from 'vue';
-import MagicImage from 'magic-image';
+import MagicImage from '@dixipro/magic-image';
 
 const busy = ref(false);
 
 function onSave({ original, crop }) {
-  // original.file, crop.file — ready File objects
+  // original.file
+  // crop.file
 }
 </script>
 
@@ -109,69 +142,215 @@ function onSave({ original, crop }) {
 </template>
 ```
 
-The minimal call is the handler alone, everything else by default:
+The minimal call:
 
 ```vue
 <MagicImage @save="onSave" />
 ```
 
-## Props
+---
 
-| Prop               | Type   | Default    | What it does                                    |
-| ------------------ | ------ | ---------- | ----------------------------------------------- |
-| `maxPixels`        | number | `16000000` | anything bigger is shrunk at load               |
-| `outputFormat`     | string | `'png'`    | crop format: `png`, `jpg`, `webp`               |
-| `outputQuality`    | number | `100`      | crop quality, 1–100                             |
-| `clipboardFormat`  | string | `'png'`    | format of an original coming from the clipboard |
-| `clipboardQuality` | number | `100`      | clipboard quality, 1–100                        |
-| `cropMode`         | string | `'any'`    | `any`, `fixed`, `min`                           |
-| `cropRatio`        | string | `''`       | stencil proportion: `1`, `1.5` or `16/9`        |
-| `cropX`            | number | not set    | required width                                  |
-| `cropY`            | number | not set    | required height                                 |
+## 🔄 How it works
 
-Formats are written short; the component builds the mime type itself. Numbers
-are passed with a colon: `:crop-x="1200"`.
+1. **Upload** — choose a file or paste an image with `Ctrl+V`.
+2. **Tune** — brightness, contrast, saturation, levels and sharpening.
+3. **Crop** — set the stencil. Cropping is mandatory.
+4. **Resize down** — optionally choose a smaller final size.
+5. **Continue** — emits `save`, then the component clears itself.
 
-**PNG has no quality:** it is lossless, the quality props do not touch it.
-**JPG has no transparency:** a PNG with an alpha channel comes out on a black
-background, no white underlay is added.
+If an image exceeds `maxPixels`, MagicImage shrinks the working copy before editing.
 
-## Crop modes
+The original file is never modified.
 
-### any
+---
 
-`cropX` and `cropY` are not looked at. With `cropRatio` the stencil holds the
-proportion, without it the stencil is free. Every picture is accepted, the crop
-leaves at the size of the stencil. The «Resize down» checkbox is there, with no
-lower bound.
+## ✅ Requirements
 
-### fixed
+- Vue 3
+- Browser with Canvas API support
+- Vite, Webpack or another Vue-capable bundler
 
-The crop is **always** scaled to exactly `cropX` by the computed height, no
-matter what stencil the person dragged. Nothing is enlarged: the save button
-appears only once the stencil is at least that wide. The «Resize down» checkbox
-is not shown — the size comes from the props.
+The component is fully client-side.
 
-How the props are brought to one shape:
+---
 
-| n   | cropRatio | cropX | cropY | what happens                                 |
-| --- | --------- | ----- | ----- | -------------------------------------------- |
-| 1   | +         | +     | −     | the main case                                |
-| 2   | +         | +     | +     | `cropY` is dropped                           |
-| 3   | −         | +     | +     | `cropRatio` = x / y, then `cropY` is dropped |
-| 4   | +         | −     | +     | x = y × ratio                                |
-| 5   | +         | −     | −     | error, invalid parameters                    |
+## ⚙️ Props
 
-Everything ends up as case 1: a proportion plus X. Any other combination — no
-proportion and only one side, or neither side — is an error.
+| Prop               | Type     |    Default | Values                | Description                                    |
+| ------------------ | -------- | ---------: | --------------------- | ---------------------------------------------- |
+| `maxPixels`        | `number` | `16000000` | —                     | Images above this limit are shrunk for editing |
+| `outputFormat`     | `string` |    `'png'` | `png`, `jpg`, `webp`  | Processed crop format                          |
+| `outputQuality`    | `number` |      `100` | `1–100`               | Crop quality                                   |
+| `clipboardFormat`  | `string` |    `'png'` | `png`, `jpg`, `webp`  | Format for clipboard originals                 |
+| `clipboardQuality` | `number` |      `100` | `1–100`               | Clipboard re-encoding quality                  |
+| `cropMode`         | `string` |    `'any'` | `any`, `fixed`, `min` | Crop mode                                      |
+| `cropRatio`        | `string` |       `''` | `1`, `1.5`, `16/9`, … | Stencil ratio                                  |
+| `cropX`            | `number` |          — | —                     | Required width                                 |
+| `cropY`            | `number` |          — | —                     | Required height                                |
 
-### min
+Numbers are passed with a colon:
 
-Like `fixed`, but the result is never squeezed: a stencil bigger than required
-leaves as it is, a smaller one is refused. The «Resize down» checkbox is there
-but will not go below the required size.
+```vue
+<MagicImage :crop-x="1200" />
+```
 
-## Events
+### Format notes
+
+> 🟣 **PNG has no quality setting.**  
+> PNG is lossless, so `outputQuality` and `clipboardQuality` do not affect PNG output.
+
+> ⚫ **JPEG has no transparency.**  
+> A transparent PNG exported as JPEG gets a black background. MagicImage does not add a white underlay.
+
+---
+
+## 🎛️ Tuning
+
+MagicImage has three adjustment tabs.
+
+### ☀️ Light
+
+- brightness
+- contrast
+- saturation
+
+### 📊 Levels
+
+- black point
+- gamma
+- white point
+- source histogram
+
+### ✨ Sharpen
+
+- amount
+- radius
+- threshold
+
+Each tab has its own **Apply** switch.
+
+Until the switch is enabled, the tab affects neither preview nor output.
+
+### Controls
+
+- **Slider + number field** stay synchronized.
+- Typed decimals are preserved while editing.
+- On `Enter` or blur, out-of-range values are clamped.
+- **Reset** restores neutral values without changing the Apply state.
+- **Sharpen** includes short hints describing its three parameters.
+
+---
+
+## ✂️ Crop modes
+
+### 🆓 `any`
+
+`cropX` and `cropY` are ignored.
+
+With `cropRatio`, the stencil keeps the requested proportion. Without it, the stencil is free.
+
+The result leaves at the current stencil size.
+
+**Resize down** is available with no lower bound.
+
+---
+
+### 🎯 `fixed`
+
+The crop is always scaled to the required width and computed height.
+
+Nothing is enlarged.
+
+The save action appears only when the stencil is large enough.
+
+**Resize down** is not shown because the final size comes from the props.
+
+Parameter normalization:
+
+|   # | `cropRatio` | `cropX` | `cropY` | Result                                       |
+| --: | :---------: | :-----: | :-----: | -------------------------------------------- |
+|   1 |     ✅      |   ✅    |   ❌    | main case                                    |
+|   2 |     ✅      |   ✅    |   ✅    | `cropY` is ignored                           |
+|   3 |     ❌      |   ✅    |   ✅    | `cropRatio = x / y`, then `cropY` is ignored |
+|   4 |     ✅      |   ❌    |   ✅    | `cropX = cropY × ratio`                      |
+|   5 |     ✅      |   ❌    |   ❌    | invalid parameters                           |
+
+Everything ends up as:
+
+```text
+ratio + X
+```
+
+Any other combination is invalid.
+
+---
+
+### 📐 `min`
+
+Works like `fixed`, but the result is never squeezed down automatically.
+
+- a larger stencil leaves at its current size;
+- a smaller stencil is refused;
+- **Resize down** is available;
+- resize cannot go below the required size.
+
+---
+
+## 📏 Resize down
+
+Available in:
+
+- `any`
+- `min`
+
+Not available in:
+
+- `fixed`
+
+Type one side and the other follows the stencil ratio.
+
+The fields do not silently correct the user while typing. Validation is handled by the Continue state.
+
+Moving the stencil:
+
+- switches Resize down off if the crop size changes;
+- restores the stencil dimensions;
+- keeps the values if only position changed and size stayed the same.
+
+---
+
+## ▶️ Continue and status
+
+The Continue action is not disabled — it is hidden until the current state is valid.
+
+The status line explains why.
+
+### ✅ Ready to save
+
+The stencil satisfies the current mode and Resize down values are valid.
+
+### ❌ The stencil is smaller than required
+
+For `fixed` or `min`, the stencil is below the required dimensions.
+
+### ❌ The final size is out of range
+
+Resize down is:
+
+- empty;
+- larger than the stencil;
+- below the required minimum in `min`.
+
+While the cropper is still loading, there is no status and no Continue action.
+
+---
+
+## 📡 Events
+
+| Event   | Payload                       | Description                     |
+| ------- | ----------------------------- | ------------------------------- |
+| `save`  | `{ original, crop }`          | Final files are ready           |
+| `stage` | `'empty' \| 'edit' \| 'crop'` | Current component stage changed |
 
 ### `save`
 
@@ -182,133 +361,356 @@ but will not go below the required size.
 }
 ```
 
-- `original` — the source. A file from disk leaves as it came, with its own
-  bytes and type; a clipboard picture is handed over as `clipboardFormat`.
-- `crop` — cropped and processed, in `outputFormat`.
-- Both parts are always there, and the component clears itself right after.
+#### `original`
+
+The source file.
+
+- A disk file leaves exactly as received.
+- A clipboard image leaves in `clipboardFormat`.
+
+#### `crop`
+
+The processed crop in `outputFormat`.
+
+Both objects are always present.
+
+Immediately after `save`, the component clears itself.
+
+---
 
 ### `stage`
 
-`'empty' | 'edit' | 'crop'` — fires on every move. `empty` means the component
-is free: nothing is taken, and whatever the page hid can come back.
+Possible values:
 
-```html
+```text
+empty
+edit
+crop
+```
+
+Example:
+
+```vue
 <MagicImage @stage="busy = $event !== 'empty'" @save="onSave" />
 ```
 
-## Slot
+`empty` means the component is free and holds no image.
 
-`#actions="{ canSave, apply }"` — the owner's button, named however they like.
-Without the slot the component draws its own «Continue». `canSave` means the
-stencil holds what the mode requires.
+The event fires only on a change: the initial `empty` is not emitted. Start with
+the component considered free — `busy = false` — and let the event switch it.
 
-## Errors
+---
 
-An error is shown inside the component instead of the buttons:
+## 🧩 Slots
 
-- **invalid parameters** — see the table above; the component does not work at
-  all until the props are fixed, and it will not even take a picture;
-- **the required size is out of reach** — in `fixed` and `min`, when the working
-  copy is narrower than `cropX`. This covers a picture that is simply too small
-  and a picture that `maxPixels` had to shrink;
-- **this file could not be read as a picture** — a broken or unsupported file;
-- **the browser could not encode the picture** — `canvas.toBlob()` gave nothing
-  back, which happens on canvases past the browser's limits.
+### `actions`
 
-The crop is taken from the shrunk copy, never from the full-size original, so
-`cropX` has to be within reach of the given `maxPixels`.
+```vue
+<template #actions="{ canSave, apply }">
+  <button v-if="canSave" @click="apply()">Continue</button>
+</template>
+```
 
-## File names
+Scope:
 
-| Source          | `original`                    | `crop`                     |
-| --------------- | ----------------------------- | -------------------------- |
-| file `logo.jpg` | `logo.jpg`                    | `logo.<outputFormat>`      |
-| clipboard       | `clipBoard.<clipboardFormat>` | `clipBoard.<outputFormat>` |
+| Value     | Meaning                                               |
+| --------- | ----------------------------------------------------- |
+| `canSave` | `true` when the current crop and final size are valid |
+| `apply()` | performs the save action                              |
 
-The two names can match (`logo.png` with `output-format="png"`). That is fine:
-the parts arrive as separate properties of the object, and what to do about the
-names is the owner's call.
+Without the slot, MagicImage renders its own Continue button, shown only while
+`canSave` is true.
 
-## The clipboard
+The status line remains visible either way.
 
-Paste goes into the field next to «Upload», not into the window: what is pasted
-into someone else's input is none of the component's business. The field is
-there only while nothing is taken, so an open picture cannot be overwritten by
-a stray Ctrl-V.
+---
 
-The clipboard hands over an already encoded picture, almost always PNG. When its
-type is the one `clipboardFormat` asks for, **nothing is re-encoded** — that blob
-becomes the original and no canvas is built. A canvas appears only when the
-format really has to change.
+## 🌍 Text and translation
 
-## Inside
+Every word the component says lives in one file:
+
+```text
+src/lib/text.js
+```
+
+It is a single object, English by default — the buttons, the tab titles, the
+labels of the sliders, the status line, the hints of the Sharpen tab and every
+error message. Nothing outside that file is shown to the user, and the component
+carries no i18n library: translating it means translating one object.
+
+```js
+export const TEXT = {
+  pick: 'Upload',
+  pasteHere: 'Click here and press Ctrl-V',
+  light: 'Light',
+  // …
+  ready: 'Ready to save',
+};
+```
+
+To translate, copy the `src/` folder into your project and change that file.
+
+> ⚠️ **Installed from npm, the file sits in `node_modules` and must not be
+> edited** — the next install wipes it. Until the component takes the words as a
+> prop, a translated copy means copying the folder.
+
+---
+
+## ⚠️ Errors
+
+Errors are shown inside the component instead of the action buttons.
+
+### Invalid parameters: the component cannot work with them
+
+The crop props form an unsupported combination.
+
+The component does not accept an image until the props are fixed.
+
+### This picture cannot give the required size
+
+Used by `fixed` and `min` when the working copy is smaller than the required
+size — narrower than `cropX` or lower than the computed height.
+
+This may happen because:
+
+- the source image is too small;
+- `maxPixels` forced the working copy to shrink.
+
+### This file could not be read as a picture
+
+The image is broken or unsupported by the browser.
+
+### The browser could not encode the picture
+
+`canvas.toBlob()` returned nothing, usually because browser canvas limits were exceeded.
+
+### There is no picture in the clipboard
+
+Something was pasted into the paste field, but it was not an image — text, for
+example. Shown under the paste field; nothing is taken.
+
+> The crop is always produced from the working copy, not directly from the full-size original.
+
+---
+
+## 🏷️ File names
+
+| Source     | `original`                    | `crop`                     |
+| ---------- | ----------------------------- | -------------------------- |
+| `logo.jpg` | `logo.jpg`                    | `logo.<outputFormat>`      |
+| clipboard  | `clipBoard.<clipboardFormat>` | `clipBoard.<outputFormat>` |
+
+The names may match.
+
+For example:
+
+```text
+logo.png
+logo.png
+```
+
+That is intentional because the files arrive as separate properties.
+
+---
+
+## 📋 Clipboard
+
+Paste works only inside the dedicated paste field.
+
+MagicImage does not listen to arbitrary `Ctrl+V` events elsewhere on the page.
+
+The paste field exists only while the component is empty, so an open image cannot be replaced accidentally.
+
+Clipboard images are usually already encoded as PNG.
+
+If the clipboard MIME type already matches `clipboardFormat`, MagicImage does **not** re-encode it.
+
+A canvas is created only when conversion is required.
+
+---
+
+## 🏗️ Architecture
 
 ```text
 src/
-  MagicImage.vue    stages, the incoming picture, the preview, the save event
-  TunePanel.vue     the three tuning tabs over one model, plus the histogram
-  CropStage.vue     the stencil, the sizes and the «Resize down» fields
-  lib/plan.js       formats, the proportion and the crop modes — plain functions
-  lib/pixels.js     levels, sharpening, shrinking, the histogram
-  lib/text.js       every word the component says
-  assets/style.css  buttons, tabs, fields — Bootstrap-like, own classes, mi- prefix
+  MagicImage.vue        stages, input image, preview, save event
+  TunePanel.vue         light, levels, sharpen, histogram
+  CropStage.vue         crop stencil, sizes, Resize down
+  lib/
+    plan.js             formats, ratios and crop modes
+    pixels.js           levels, sharpening, shrinking, histogram
+    text.js             all component text
+  assets/
+    style.css           component styles, mi- prefix
+
 test/
-  plan.test.js      the table of crop modes, case by case
-App.vue             the demo page: the cases, the parameters, the result
-DemoParams.vue      the demo form over the props
+  plan.test.js          crop-mode cases
+
+App.vue                 demo page
+DemoParams.vue          demo controls
+ShowResult.vue          last save result
+InstallMagicImage.vue   install/example output
+demoProps.js            demo-side prop definitions
 ```
 
-**MagicImage.vue** is the orchestrator and holds no arithmetic of its own. It
-keeps the stage (`empty` / `edit` / `crop`), takes the file or the paste, builds
-the working copy, draws the preview, and turns the crop into the two files of
-`save`.
+### `MagicImage.vue`
 
-Two things in it are worth knowing about:
+The orchestrator.
 
-- **A session counter.** Decoding and encoding are slow. Every take, every
-  cancel and the unmount raise the counter; an operation carries its number and
-  drops whatever it produced if the number has moved. Without it a late `await`
-  could drop picture A on top of picture B, or bring a cancelled crop back.
-- **Everything for `save` is taken before the wait.** A cancel in the middle of
-  encoding cannot turn into half of one picture and half of another.
+It owns:
 
-**TunePanel.vue** takes `{ light, levels, sharpen }` as a `v-model` and never
-mutates it: a new object leaves on every move. It also draws the histogram,
-which belongs to the «Levels» tab.
+- stage: `empty / edit / crop`;
+- file and clipboard input;
+- working copy;
+- preview;
+- final `save`.
 
-**CropStage.vue** owns the stencil and the final size. It reports the size of
-the stencil with `change` and gives the ready canvas from `getCanvas()`, which
-returns `{ canvas }` or `{ error }` — the limits are checked against the canvas
-in hand, not against the numbers the interface managed to show.
+It intentionally contains no crop arithmetic.
 
-**lib/plan.js** is the only place where the modes live, and the only file fully
-covered by tests. **lib/pixels.js** holds the pixel work; the settings come as
-arguments, nothing there reads the state of a component.
+#### Session counter
 
-Light is a css filter and stays outside the pixel work: the browser puts it over
-the preview canvas, and the same filter is applied once more when the processed
-copy is built, so what the eye saw is what leaves.
+Image decoding and encoding are asynchronous.
 
-## Development
+Every new image, cancel and unmount increments a session counter.
+
+Late async results are discarded if they belong to an older session.
+
+This prevents:
+
+- image A appearing over image B;
+- cancelled work returning later;
+- half-old / half-new save results.
+
+All data required for `save` is captured before asynchronous encoding starts.
+
+---
+
+### `TunePanel.vue`
+
+Receives through `v-model`:
+
+```text
+{ light, levels, sharpen }
+```
+
+It never mutates the object directly. Every change emits a new object.
+
+Each section contains its own `on` state — the tab's Apply switch.
+
+---
+
+### `CropStage.vue`
+
+Owns:
+
+- crop stencil;
+- crop dimensions;
+- Resize down;
+- final canvas.
+
+Reports:
+
+- `change`
+- `valid`
+
+and exposes:
+
+```text
+getCanvas() → { canvas } | { error }
+```
+
+Canvas limits are validated against the actual generated canvas.
+
+---
+
+### `lib/plan.js`
+
+The single source of truth for:
+
+- crop modes;
+- formats;
+- ratio handling;
+- crop parameter normalization.
+
+It is fully covered by the crop-mode tests.
+
+---
+
+### `lib/pixels.js`
+
+Contains pixel operations:
+
+- levels;
+- sharpening;
+- shrinking;
+- histogram.
+
+It receives settings as arguments and knows nothing about Vue component state.
+
+Disabled tuning sections are skipped.
+
+---
+
+## 🛠️ Development
 
 ```bash
 npm install
-npm run dev     # the demo page
-npm run build   # a build in public/magic-image/, for checking only
-npm test        # the crop-mode table, in node, without a browser
+npm run dev
+npm run build
+npm test
 ```
 
-`vite.config.js` is here for the local demo only — the component itself needs
-no build. Every path in that file points into MagicPro, the project this
-component grew in: the dependencies are taken from its `node_modules` and the
-build lands in its `public` folder. Elsewhere those paths mean nothing, so set
-them to your own folders.
+| Command         | Purpose                                   |
+| --------------- | ----------------------------------------- |
+| `npm run dev`   | run the demo                              |
+| `npm run build` | build the demo into `public/magic-image/` |
+| `npm test`      | run crop-mode tests in Node               |
 
-Inside MagicPro the component is imported by a relative path
-(`admin/js/magic-image/src/MagicImage.vue`), and the built demo is what the site
-page embeds.
+`vite.config.js` exists only for the local demo.
 
-`npm publish` sends only `src/` and this file — see `files` in `package.json`.
+Its paths currently point into MagicPro, where this component originated:
 
-`vue` and `vue-advanced-cropper` are taken from the node_modules of the MagicPro
-package, so the build never ends up with two copies of Vue.
+- dependencies are taken from MagicPro's `node_modules`;
+- the demo build is written into MagicPro's `public` directory.
+
+Outside MagicPro, those paths must be changed.
+
+Inside MagicPro the component is imported by relative path:
+
+```text
+admin/js/magic-image/src/MagicImage.vue
+```
+
+`npm publish` sends only:
+
+```text
+src/
+README.md
+LICENSE
+```
+
+as defined by `files` in `package.json`.
+
+---
+
+## 🙏 Donate
+
+Saved you some time? I’d really appreciate your support.
+
+**[Donate](https://magicimage.dixipro.net/donate)**
+
+Every contribution is appreciated.
+
+---
+
+## 💡 Philosophy
+
+MagicImage is not trying to replace specialised image libraries.
+
+Its job is narrower:
+
+> **take the repetitive everyday browser workflow around an image and make it one reusable Vue component.**
+
+Upload it. Paste it. Tune it. Crop it. Return the files.
+
+Nothing more is assumed.

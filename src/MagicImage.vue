@@ -86,6 +86,9 @@ const cropSrc = ref(null); // the processed picture the stencil works on
 const cropWidth = ref(0);
 const cropHeight = ref(0);
 
+// the «Resize down» fields hold numbers that can be used (CropStage decides)
+const resizeValid = ref(true);
+
 const busy = ref(false);
 
 // light, levels, sharpen — one model, TunePanel edits it
@@ -102,7 +105,7 @@ const tooSmall = computed(() => {
 });
 
 const canSave = computed(() => {
-  if (stage.value !== 'crop' || plan.value.error || tooSmall.value) return false;
+  if (stage.value !== 'crop' || plan.value.error || tooSmall.value || !resizeValid.value) return false;
 
   // fixed and min both refuse to enlarge: the stencil must hold the size
   if (plan.value.mode !== 'any') {
@@ -110,6 +113,25 @@ const canSave = computed(() => {
   }
 
   return cropWidth.value > 0 && cropHeight.value > 0;
+});
+
+/**
+ * What the crop stage says about the save: ready, or why not. «Continue» is
+ * simply hidden until it is ready, so the reason has to be written somewhere.
+ */
+const saveState = computed(() => {
+  // nothing to say yet: not cropping, or the stencil is still loading
+  if (stage.value !== 'crop' || plan.value.error || tooSmall.value || !cropWidth.value) return null;
+
+  if (canSave.value) return { ok: true, text: TEXT.ready };
+
+  const { mode, width, height } = plan.value;
+
+  if (mode !== 'any' && (cropWidth.value < width || cropHeight.value < height)) {
+    return { ok: false, text: TEXT.stencilSmall };
+  }
+
+  return { ok: false, text: TEXT.resizeBad };
 });
 
 const lightFilter = computed(() => lightCss(adjust.value.light));
@@ -150,13 +172,7 @@ function drawPreview() {
 
   const scale = Math.min(1, viewWidth.value / source.width);
 
-  renderTo(
-    canvas,
-    source,
-    Math.max(1, Math.round(source.width * scale)),
-    Math.max(1, Math.round(source.height * scale)),
-    adjust.value
-  );
+  renderTo(canvas, source, Math.max(1, Math.round(source.width * scale)), Math.max(1, Math.round(source.height * scale)), adjust.value);
 }
 
 // a slider fires faster than a frame is computed: only the last one counts
@@ -318,8 +334,12 @@ async function goCrop() {
   if (cropSrc.value) URL.revokeObjectURL(cropSrc.value);
 
   cropSrc.value = URL.createObjectURL(blob);
-  cropWidth.value = canvas.width;
-  cropHeight.value = canvas.height;
+
+  // zero until the stencil reports its own size: the cropper is still loading
+  // the picture, and a size taken from anywhere else lets «Continue» fire into
+  // an empty canvas
+  cropWidth.value = 0;
+  cropHeight.value = 0;
 
   stage.value = 'crop';
 }
@@ -440,13 +460,7 @@ function clear() {
 
       <button type="button" class="mi-btn" @click="fileInput.click()">{{ TEXT.pick }}</button>
 
-      <input
-        class="mi-input magic-image__paste"
-        type="text"
-        :placeholder="TEXT.pasteHere"
-        @paste.prevent="onPaste"
-        @beforeinput.prevent
-      />
+      <input class="mi-input magic-image__paste" type="text" :placeholder="TEXT.pasteHere" @paste.prevent="onPaste" @beforeinput.prevent />
 
       <div class="magic-image__small" v-if="errorMsg">{{ errorMsg }}</div>
     </div>
@@ -458,9 +472,9 @@ function clear() {
 
       <div class="magic-image__panel">
         <div class="magic-image__sizes">
-          <div>{{ TEXT.size }}: {{ originalWidth }} × {{ originalHeight }}</div>
-          <div v-if="shrunk">{{ TEXT.shrunk }}: {{ work.width }} × {{ work.height }}</div>
-          <div v-if="plan.width">{{ TEXT.required }}: {{ plan.width }} × {{ plan.height }}</div>
+          <div class="mb-2">{{ TEXT.size }}: {{ originalWidth }} × {{ originalHeight }}</div>
+          <div class="mb-2" v-if="shrunk">{{ TEXT.shrunk }}: {{ work.width }} × {{ work.height }}</div>
+          <div class="mb-2" v-if="plan.width">{{ TEXT.required }}: {{ plan.width }} × {{ plan.height }}</div>
         </div>
 
         <div class="magic-image__small" v-if="errorMsg">{{ errorMsg }}</div>
@@ -484,7 +498,7 @@ function clear() {
       </div>
     </div>
 
-    <CropStage v-else ref="cropRef" :src="cropSrc" :plan="plan" @change="onCropChange">
+    <CropStage v-else ref="cropRef" :src="cropSrc" :plan="plan" @change="onCropChange" @valid="resizeValid = $event">
       <template #info>
         <div>{{ TEXT.size }}: {{ originalWidth }} × {{ originalHeight }}</div>
         <div v-if="shrunk">{{ TEXT.shrunk }}: {{ work.width }} × {{ work.height }}</div>
@@ -493,9 +507,11 @@ function clear() {
       <template #actions>
         <div class="magic-image__small" v-if="errorMsg">{{ errorMsg }}</div>
 
+        <div v-if="saveState" class="magic-image__status" :class="{ 'is-ok': saveState.ok }">{{ saveState.ok ? '✓' : '✕' }} {{ saveState.text }}</div>
+
         <div class="magic-image__actions">
           <slot name="actions" :can-save="canSave" :apply="apply">
-            <button type="button" class="mi-btn mi-btn--primary" :disabled="!canSave || busy" @click="apply()">
+            <button v-if="canSave" type="button" class="mi-btn mi-btn--primary" :disabled="busy" @click="apply()">
               {{ TEXT.next }}
             </button>
           </slot>
@@ -549,6 +565,16 @@ function clear() {
 .magic-image__small {
   color: #b00;
   margin: 0.5rem 0;
+}
+
+.magic-image__status {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #b02a37;
+}
+
+.magic-image__status.is-ok {
+  color: #198754;
 }
 
 .magic-image__actions {

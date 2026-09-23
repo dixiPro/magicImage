@@ -19,6 +19,12 @@ export const TEXT = {
   radius: 'Radius, px',
   threshold: 'Threshold',
   reset: 'Reset',
+  apply: 'Apply',
+  sharpenHelp: [
+    'Radius — the larger the image, the larger the radius needed.',
+    'Amount — the higher the value, the stronger the sharpening effect.',
+    'Threshold — the higher the value, the more sharpening is limited to high-contrast edges.',
+  ],
   toCrop: 'Crop',
   back: 'Back to tuning',
   next: 'Continue',
@@ -32,4 +38,7 @@ export const TEXT = {
   encodeFailed: 'The browser could not encode the picture',
   badParams: 'Invalid parameters: the component cannot work with them',
   tooSmall: 'This picture cannot give the required size',
+  ready: 'Ready to save',
+  stencilSmall: 'The stencil is smaller than required',
+  resizeBad: 'The final size is out of range',
 };

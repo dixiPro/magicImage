@@ -21,7 +21,7 @@ const props = defineProps({
   plan: { type: Object, required: true },
 });
 
-const emit = defineEmits(['change']);
+const emit = defineEmits(['change', 'valid']);
 
 const cropperRef = ref(null);
 
@@ -48,37 +48,40 @@ function onCropChange({ canvas }) {
 }
 
 /**
- * Keeps the fields on the stencil proportion and never enlarges: this is a
- * resize down. In `min` it also refuses to go below the required size.
+ * The fields never correct anybody: whatever is typed stays, the other side
+ * follows the stencil proportion. Whether the numbers are any good is decided
+ * by `resizeValid`, and «Continue» simply does not show until they are.
  */
-function fitResize(side) {
+function followResize(side) {
   const ratio = cropHeight.value ? cropWidth.value / cropHeight.value : 1;
+  const value = Math.round(Number(resizeSize.value[side]) || 0);
 
-  let width = Math.round(Number(resizeSize.value.width) || 0);
-  let height = Math.round(Number(resizeSize.value.height) || 0);
+  if (value < 1) return;
 
-  if (side === 'width') height = Math.round(width / ratio);
-  else width = Math.round(height * ratio);
-
-  if (width < 1 || height < 1 || width > cropWidth.value || height > cropHeight.value) {
-    width = cropWidth.value;
-    height = cropHeight.value;
-  }
-
-  if (props.plan.mode === 'min' && (width < props.plan.width || height < props.plan.height)) {
-    width = props.plan.width;
-    height = Math.max(props.plan.height, Math.round(props.plan.width / ratio));
-  }
-
-  resizeSize.value = { width, height };
+  resizeSize.value =
+    side === 'width' ? { width: value, height: Math.max(1, Math.round(value / ratio)) } : { width: Math.max(1, Math.round(value * ratio)), height: value };
 }
 
-// the stencil moved: without the checkbox the fields just follow it, with it we
-// keep the given width and recompute the height for the new proportion
+// the stencil moved: a final size typed for the old stencil means nothing for
+// the new one, so «Resize down» switches off and the fields show the stencil
 watch([cropWidth, cropHeight], ([width, height]) => {
-  if (resizeOn.value && width && height) fitResize('width');
-  else resizeSize.value = { width, height };
+  resizeOn.value = false;
+  resizeSize.value = { width, height };
 });
+
+/** The final size is usable: not empty, not bigger than the stencil, and in min not below the requirement. */
+const resizeValid = computed(() => {
+  if (!resizeOn.value) return true;
+
+  const { width, height } = resizeSize.value;
+
+  if (!(width >= 1 && height >= 1)) return false;
+  if (width > cropWidth.value || height > cropHeight.value) return false;
+
+  return !(props.plan.mode === 'min' && (width < props.plan.width || height < props.plan.height));
+});
+
+watch(resizeValid, (ok) => emit('valid', ok), { immediate: true });
 
 watch(resizeOn, (on) => {
   if (on) resizeSize.value = { width: cropWidth.value, height: cropHeight.value };
@@ -139,43 +142,24 @@ defineExpose({ getCanvas });
 <template>
   <div class="magic-image__body">
     <div class="magic-image__view">
-      <Cropper
-        ref="cropperRef"
-        :src="src"
-        :stencil-props="{ aspectRatio: aspectRatio }"
-        :debounce="0"
-        class="magic-image__cropper"
-        @change="onCropChange"
-      />
+      <Cropper ref="cropperRef" :src="src" :stencil-props="{ aspectRatio: aspectRatio }" :debounce="0" class="magic-image__cropper" @change="onCropChange" />
     </div>
 
     <div class="magic-image__panel">
       <div class="magic-image__sizes">
         <slot name="info" />
 
-        <div>{{ TEXT.crop }}: {{ cropWidth }} × {{ cropHeight }}</div>
+        <div v-if="cropWidth">{{ TEXT.crop }}: {{ cropWidth }} × {{ cropHeight }}</div>
         <div v-if="plan.width">{{ TEXT.required }}: {{ plan.width }} × {{ plan.height }}</div>
       </div>
 
       <div v-if="resizeAllowed" class="magic-image__resize">
         <label class="mi-check"><input type="checkbox" v-model="resizeOn" /> {{ TEXT.resize }}</label>
 
-        <span v-if="resizeOn">
-          <input
-            class="mi-input"
-            type="number"
-            min="1"
-            v-model.number="resizeSize.width"
-            @change="fitResize('width')"
-          />
+        <span class="ms-1" v-if="resizeOn">
+          <input class="mi-input" type="number" min="1" v-model.number="resizeSize.width" @input="followResize('width')" />
           ×
-          <input
-            class="mi-input"
-            type="number"
-            min="1"
-            v-model.number="resizeSize.height"
-            @change="fitResize('height')"
-          />
+          <input class="mi-input" type="number" min="1" v-model.number="resizeSize.height" @input="followResize('height')" />
         </span>
       </div>
 

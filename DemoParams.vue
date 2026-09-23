@@ -1,120 +1,171 @@
 <script setup>
 /**
- * Starting parameters of the demo, over one model. Not part of the component:
- * the component takes props, and this is just a way to type them by hand.
- *
- * A field shows its real value; the grey word in an empty field says what the
- * emptiness means, so a value is never mistaken for a hint.
- *
- * crop-x and crop-y are only shown for `fixed` and `min`: in `any` the
- * component ignores them, and a field that changes nothing is a lie.
+ * The parameters of the component: a case to start from, the fields to change
+ * it by hand, and the button that hands everything over to MagicImage.
  */
-const props = defineProps({
-  modelValue: { type: Object, required: true },
+import { computed, onMounted, watch } from 'vue';
+
+import { BASE, CASES, MODES } from './demoProps.js';
+import './src/assets/style.css';
+
+const params = defineModel('params', { type: Object, required: true });
+const ready = defineModel('ready', { type: Boolean, required: true });
+
+/**
+ * The case the parameters still match, if any. Nothing is remembered: a field
+ * changed by hand puts the parameters beside every case, and none of the
+ * buttons stays lit — the set on screen is no longer one of them.
+ *
+ * The case is the demo's own business anyway; params carry nothing but the
+ * props of the component, or they would leak into the call as stray attributes.
+ */
+const current = computed(() => {
+  const now = JSON.stringify(params.value);
+
+  return CASES.find((one) => JSON.stringify({ ...BASE, ...one.params }) === now) ?? null;
 });
 
-const emit = defineEmits(['update:modelValue']);
+onMounted(() => {
+  if (!Object.keys(params.value).length) pick(CASES[0]);
+});
 
-function set(key, value) {
-  emit('update:modelValue', repair({ ...props.modelValue, [key]: value }, key));
+function pick(one) {
+  params.value = { ...BASE, ...one.params };
 }
 
 /**
- * `fixed` and `min` need a size, and switching the mode by hand leaves the
- * form without one — the component would meet an error instead of a picture.
- * So a mode switch brings a workable size with it; the fields are there to be
- * changed afterwards.
+ * `fixed` and `min` need a size, and switching the mode by hand leaves the form
+ * without one — the component would meet an error instead of a picture. So a
+ * mode switch brings a workable size with it.
  */
-function repair(next, key) {
-  if (key !== 'cropMode' || next.cropMode === 'any') return next;
+watch(
+  () => params.value.cropMode,
+  (mode) => {
+    if (!mode || mode === 'any') return;
 
-  const fixed = { ...next };
-
-  if (!fixed.cropX && !fixed.cropY) fixed.cropX = 1200;
-  if (!fixed.cropRatio && !(fixed.cropX && fixed.cropY)) fixed.cropRatio = '16/9';
-
-  return fixed;
-}
+    if (!params.value.cropX && !params.value.cropY) params.value.cropX = 1200;
+    if (!params.value.cropRatio && !(params.value.cropX && params.value.cropY)) params.value.cropRatio = '16/9';
+  }
+);
 </script>
 
 <template>
-  <div class="demo-params">
-    <label>
-      crop-mode
-      <select class="mi-input" :value="modelValue.cropMode" @change="set('cropMode', $event.target.value)">
-        <option value="any">any</option>
-        <option value="fixed">fixed</option>
-        <option value="min">min</option>
-      </select>
-    </label>
+  <div v-if="params.cropMode" class="demo-params">
+    <h2 class="demo-params__title">Cases</h2>
 
-    <label>
-      crop-ratio
-      <input
-        class="mi-input"
-        type="text"
-        placeholder="free"
-        :value="modelValue.cropRatio"
-        @change="set('cropRatio', $event.target.value)"
-      />
-    </label>
+    <div class="demo-params__cases">
+      <button
+        v-for="one in CASES"
+        :key="one.key"
+        type="button"
+        class="mi-btn"
+        :class="{ 'mi-btn--primary': current?.key === one.key }"
+        @click="pick(one)"
+      >
+        {{ one.title }}
+      </button>
+    </div>
 
-    <label v-if="modelValue.cropMode !== 'any'">
-      crop-x
-      <input
-        class="mi-input"
-        type="number"
-        min="0"
-        placeholder="not set"
-        :value="modelValue.cropX || ''"
-        @change="set('cropX', Number($event.target.value))"
-      />
-    </label>
+    <p v-if="current" class="demo-params__about">{{ current.about }}</p>
 
-    <label v-if="modelValue.cropMode !== 'any'">
-      crop-y
-      <input
-        class="mi-input"
-        type="number"
-        min="0"
-        placeholder="not set"
-        :value="modelValue.cropY || ''"
-        @change="set('cropY', Number($event.target.value))"
-      />
-    </label>
 
-    <label>
-      output-format
-      <select class="mi-input" :value="modelValue.outputFormat" @change="set('outputFormat', $event.target.value)">
-        <option value="png">png</option>
-        <option value="jpg">jpg</option>
-        <option value="webp">webp</option>
-      </select>
-    </label>
+    <h2 class="demo-params__title">Parameters</h2>
 
-    <label>
-      output-quality
-      <input
-        v-if="modelValue.outputFormat !== 'png'"
-        class="mi-input"
-        type="number"
-        min="1"
-        max="100"
-        :value="modelValue.outputQuality"
-        @change="set('outputQuality', Number($event.target.value))"
-      />
+    <div class="demo-params__fields">
+      <label>
+        crop-mode
+        <select class="mi-input" v-model="params.cropMode">
+          <option value="any">any</option>
+          <option value="fixed">fixed</option>
+          <option value="min">min</option>
+        </select>
+      </label>
 
-      <span v-else class="demo-params__lossless">lossless</span>
-    </label>
+      <label>
+        crop-ratio
+        <input class="mi-input" type="text" placeholder="free" v-model="params.cropRatio" />
+      </label>
+
+      <label v-if="params.cropMode !== 'any'">
+        crop-x
+        <input class="mi-input" type="number" min="0" placeholder="not set" v-model.number="params.cropX" />
+      </label>
+
+      <label v-if="params.cropMode !== 'any'">
+        crop-y
+        <input class="mi-input" type="number" min="0" placeholder="not set" v-model.number="params.cropY" />
+      </label>
+
+      <label>
+        output-format
+        <select class="mi-input" v-model="params.outputFormat">
+          <option value="png">png</option>
+          <option value="jpg">jpg</option>
+          <option value="webp">webp</option>
+        </select>
+      </label>
+
+      <label>
+        output-quality
+        <input
+          v-if="params.outputFormat !== 'png'"
+          class="mi-input"
+          type="number"
+          min="1"
+          max="100"
+          v-model.number="params.outputQuality"
+        />
+
+        <span v-else class="demo-params__lossless">lossless</span>
+      </label>
+    </div>
+
+    <p class="demo-params__mode">{{ MODES[params.cropMode] }}</p>
+
+    <button type="button" class="mi-btn mi-btn--primary demo-params__go" @click="ready = true">Go</button>
   </div>
 </template>
 
 <style scoped>
-.demo-params {
+.demo-params__title {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+}
+
+.demo-params__cases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.demo-params__about {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.demo-params__mode {
+  margin: 1rem 0 0;
+  font-size: 0.875rem;
+  color: #212529;
+}
+
+.demo-params__fields {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin: 0.75rem 0;
+}
+
+.demo-params__fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: #666;
 }
 
 /* png has no quality: the field gives way to a word */
@@ -126,11 +177,7 @@ function repair(next, key) {
   color: #212529;
 }
 
-.demo-params label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  font-size: 0.8rem;
-  color: #666;
+.demo-params__go {
+  margin-top: 1rem;
 }
 </style>
