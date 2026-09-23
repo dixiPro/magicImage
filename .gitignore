@@ -1,3 +1,4 @@
 node_modules/
 dist/
 toDo/
+vite.config.magicpro.js

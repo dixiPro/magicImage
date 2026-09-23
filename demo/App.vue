@@ -8,11 +8,11 @@
  */
 import { ref } from 'vue';
 
-import MagicImage from './src/MagicImage.vue';
+import MagicImage from '../src/MagicImage.vue';
 import DemoParams from './DemoParams.vue';
 import ShowResult from './ShowResult.vue';
-import InstallMagicImage from './InstallMagicImage.vue';
-import './src/assets/style.css';
+import UsageSnippet from './UsageSnippet.vue';
+import '../src/assets/style.css';
 
 const params = ref({});
 const ready = ref(false);
@@ -38,7 +38,7 @@ function onStage(stage) {
     <template v-if="!ready">
       <ShowResult :result="result" />
 
-      <InstallMagicImage :params="params" />
+      <UsageSnippet :params="params" />
     </template>
   </div>
 </template>

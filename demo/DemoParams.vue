@@ -6,7 +6,7 @@
 import { computed, onMounted, watch } from 'vue';
 
 import { BASE, CASES, MODES } from './demoProps.js';
-import './src/assets/style.css';
+import '../src/assets/style.css';
 
 const params = defineModel('params', { type: Object, required: true });
 const ready = defineModel('ready', { type: Boolean, required: true });

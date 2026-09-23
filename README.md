@@ -546,11 +546,17 @@ src/
 test/
   plan.test.js          crop-mode cases
 
-App.vue                 demo page
-DemoParams.vue          demo controls
-ShowResult.vue          last save result
-InstallMagicImage.vue   install/example output
-demoProps.js            demo-side prop definitions
+demo/
+  main.js               mounts the demo page
+  App.vue               the state of the page and which part is on screen
+  DemoParams.vue        cases, parameter fields and the «Go» button
+  ShowResult.vue        the two files of the last save, with downloads
+  UsageSnippet.vue      the install command and the call for the chosen case
+  demoProps.js          prop defaults, cases and mode descriptions
+
+index.html              the entry point of Vite
+media/
+  interface.webp        the cover of the README
 ```
 
 ### `MagicImage.vue`
@@ -660,26 +666,15 @@ npm run build
 npm test
 ```
 
-| Command         | Purpose                                   |
-| --------------- | ----------------------------------------- |
-| `npm run dev`   | run the demo                              |
-| `npm run build` | build the demo into `public/magic-image/` |
-| `npm test`      | run crop-mode tests in Node               |
+| Command         | Purpose                            |
+| --------------- | ---------------------------------- |
+| `npm run dev`   | run the demo                       |
+| `npm run build` | build the demo into `dist/`        |
+| `npm test`      | run crop-mode tests in Node        |
 
-`vite.config.js` exists only for the local demo.
-
-Its paths currently point into MagicPro, where this component originated:
-
-- dependencies are taken from MagicPro's `node_modules`;
-- the demo build is written into MagicPro's `public` directory.
-
-Outside MagicPro, those paths must be changed.
-
-Inside MagicPro the component is imported by relative path:
-
-```text
-admin/js/magic-image/src/MagicImage.vue
-```
+`vite.config.js` builds the demo page and nothing else: plain Vite defaults, no
+paths to set up. The component itself needs no build — it ships as source and
+is compiled by the bundler of the project that installs it.
 
 `npm publish` sends only:
 

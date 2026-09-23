@@ -3,10 +3,58 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MagicImage</title>
+    <title>MagicImage — Vue 3 image input, crop and adjustment component</title>
+
+    <style>
+      /* the page around the demo: the component brings its own styles */
+      body {
+        margin: 0;
+        padding: 1.5rem 1rem 3rem;
+        font-family: system-ui, sans-serif;
+        color: #212529;
+      }
+
+      .page {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .page__cover img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 0.5rem;
+      }
+
+      .page__foot {
+        margin-top: 2.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #dee2e6;
+        font-size: 0.875rem;
+        color: #666;
+      }
+
+      .page__foot a {
+        color: #0d6efd;
+      }
+    </style>
   </head>
+
   <body>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>
+    <div class="page">
+      <a class="page__cover" href="https://magicimage.dixipro.net/" title="MagicImage">
+        <img src="media/interface.webp" alt="MagicImage: upload or paste, crop and adjust, export the result" />
+      </a>
+
+      <div id="app"></div>
+
+      <p class="page__foot">
+        MagicImage — open source, MIT ·
+        <a href="https://github.com/dixiPro/magicImage">GitHub</a> ·
+        <a href="https://magicimage.dixipro.net/">magicimage.dixipro.net</a>
+      </p>
+    </div>
+
+    <script type="module" src="/demo/main.js"></script>
   </body>
 </html>
