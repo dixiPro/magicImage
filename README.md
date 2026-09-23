@@ -2,6 +2,9 @@
 
 > **Vue 3 image input, crop and adjustment component with clipboard support.**
 
+[![npm](https://img.shields.io/npm/v/@dixipro/magic-image?color=cb3837&logo=npm)](https://www.npmjs.com/package/@dixipro/magic-image)
+[![downloads](https://img.shields.io/npm/dm/@dixipro/magic-image?color=cb3837)](https://www.npmjs.com/package/@dixipro/magic-image)
+[![license](https://img.shields.io/npm/l/@dixipro/magic-image?color=3da639)](LICENSE)
 [![Live demo](https://img.shields.io/badge/demo-live-ff5a5f)](https://magicimage.dixipro.net/demo)
 ![Vue 3](https://img.shields.io/badge/Vue-3-42b883?logo=vuedotjs&logoColor=white)
 ![Client side](https://img.shields.io/badge/client--side-only-4c8bf5)
@@ -89,13 +92,7 @@ The component knows nothing about servers. The result leaves through a `save` ev
 npm i @dixipro/magic-image
 ```
 
-> ⚠️ **Not published yet.**
->
-> Until the first release, copy the `src/` folder into your project and import the component by a relative path.
-
-```js
-import MagicImage from './magic-image/src/MagicImage.vue';
-```
+[On npm](https://www.npmjs.com/package/@dixipro/magic-image).
 
 `vue` and `vue-advanced-cropper` are peer dependencies. MagicImage uses the copies already installed in the host project.
 
